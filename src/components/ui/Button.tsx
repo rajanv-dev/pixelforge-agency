@@ -1,35 +1,41 @@
-import { cn } from "@/lib/utils";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "outline";
+  variant?: "primary" | "dark" | "outline";
   size?: "sm" | "md" | "lg";
-  asChild?: boolean;
   href?: string;
 }
 
-/** Reusable button with primary and outline variants */
+/** Reusable button using single-source CSS variables */
 export function Button({
   children,
-  variant = "primary",
+  variant = "dark",
   size = "md",
   className,
   href,
   ...props
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center gap-2 font-display font-medium text-sm tracking-tight rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
     primary:
-      "bg-violet-600 text-white hover:bg-violet-700 active:scale-95 shadow-lg shadow-violet-600/20",
+      "bg-[var(--accent)] text-[var(--accent-foreground)] hover:bg-[var(--accent-hover)] active:scale-[0.98]",
+    dark:
+      "bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 active:scale-[0.98]",
     outline:
-      "border-2 border-violet-600 text-violet-600 dark:text-violet-400 dark:border-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950 active:scale-95",
+      "border border-[var(--border)] bg-transparent text-[var(--foreground)] hover:border-[var(--foreground)] hover:bg-[var(--secondary)] active:scale-[0.98]",
   };
 
   const sizes = {
-    sm: "px-4 py-2 text-sm",
-    md: "px-6 py-3 text-base",
-    lg: "px-8 py-4 text-lg",
+    sm: "px-4 py-2 text-xs",
+    md: "px-6 py-3 text-sm",
+    lg: "px-7 py-3.5 text-sm",
   };
 
   if (href) {

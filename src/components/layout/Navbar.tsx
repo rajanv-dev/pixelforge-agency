@@ -2,21 +2,24 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Zap } from "lucide-react";
-import { ThemeToggle } from "./ThemeToggle";
+import { Menu, X, ArrowUpRight, Sun, Moon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
-import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 const NAV_LINKS = [
+  { label: "Home", href: "#hero" },
   { label: "Services", href: "#services" },
-  { label: "Portfolio", href: "#portfolio" },
+  { label: "Work", href: "#portfolio" },
   { label: "Contact", href: "#contact" },
 ];
 
-/** Sticky navbar with smooth-scroll links, mobile menu, and dark mode toggle */
+/** PixelForge Studio — Sticky minimal navigation bar */
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -24,100 +27,148 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change / link click
   const closeMenu = () => setIsOpen(false);
 
   return (
     <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+      className={
         scrolled
-          ? "bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200/60 dark:border-gray-800/60 shadow-sm"
-          : "bg-transparent"
-      )}
+          ? "sticky top-0 z-50 w-full bg-[var(--nav-bg)] backdrop-blur-md border-b border-[var(--border)] transition-colors duration-200"
+          : "sticky top-0 z-50 w-full bg-[var(--background)] border-b border-transparent transition-colors duration-200"
+      }
     >
       <Container>
         <nav
-          className="flex h-16 items-center justify-between"
+          className="flex h-20 items-center justify-between gap-6"
           aria-label="Main navigation"
         >
-          {/* Logo */}
+          {/* Left: Lime geometric logo mark + PixelForge wordmark */}
           <Link
-            href="/"
-            className="flex items-center gap-2 font-bold text-xl text-gray-900 dark:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 rounded"
+            href="#hero"
             onClick={closeMenu}
+            className="flex items-center gap-2.5 shrink-0 rounded-sm"
+            aria-label="PixelForge Studio — Home"
           >
-            <Zap
-              size={22}
-              className="text-violet-600 dark:text-violet-400"
+            <span
+              className="flex h-7 w-7 items-center justify-center rounded-sm bg-[var(--accent)]"
               aria-hidden="true"
-            />
-            Pixelforge<span className="text-violet-600 dark:text-violet-400">.</span>
+            >
+              <span className="h-2.5 w-2.5 rotate-45 bg-[var(--accent-foreground)]" />
+            </span>
+            <span className="font-display font-bold text-xl tracking-tight text-[var(--foreground)]">
+              PixelForge
+            </span>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
+          {/* Center: Home, Services, Work, Contact */}
+          <div className="hidden md:flex items-center justify-center gap-8 lg:gap-10">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 rounded"
+                className="group relative py-1 font-sans text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors duration-200 rounded-sm"
               >
-                {link.label}
+                <span>{link.label}</span>
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 left-0 h-[2px] w-0 bg-[var(--foreground)] transition-all duration-300 ease-out group-hover:w-full"
+                />
               </a>
             ))}
-            <ThemeToggle />
+          </div>
+
+          {/* Right: Theme Toggle + Let's Talk CTA */}
+          <div className="hidden md:flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--foreground)] transition-colors"
+            >
+              {isDark ? (
+                <Sun size={16} aria-hidden="true" />
+              ) : (
+                <Moon size={16} aria-hidden="true" />
+              )}
+            </button>
             <a
               href="#contact"
-              className="ml-2 inline-flex items-center rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
+              className="group inline-flex items-center gap-1.5 rounded-md bg-[var(--accent)] px-5 py-2.5 font-display text-sm font-semibold text-[var(--accent-foreground)] hover:bg-[var(--accent-hover)] active:scale-[0.98] transition-all duration-200"
             >
-              Get Started
+              <span>Let&apos;s Talk</span>
+              <ArrowUpRight
+                size={16}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden="true"
+              />
             </a>
           </div>
 
-          {/* Mobile controls */}
-          <div className="flex items-center gap-2 md:hidden">
-            <ThemeToggle />
+          {/* Mobile Controls */}
+          <div className="flex md:hidden items-center gap-2">
             <button
-              onClick={() => setIsOpen((v) => !v)}
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--foreground)] transition-colors"
+            >
+              {isDark ? (
+                <Sun size={16} aria-hidden="true" />
+              ) : (
+                <Moon size={16} aria-hidden="true" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsOpen((prev) => !prev)}
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
-              className="flex size-9 items-center justify-center rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--foreground)] transition-colors"
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              {isOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </nav>
 
-        {/* Mobile menu */}
-        {isOpen && (
-          <nav
-            id="mobile-menu"
-            className="md:hidden border-t border-gray-200 dark:border-gray-800 py-4 flex flex-col gap-1 bg-white dark:bg-gray-950"
-            aria-label="Mobile navigation"
-          >
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={closeMenu}
-                className="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-violet-600 dark:hover:text-violet-400 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-              >
-                {link.label}
-              </a>
-            ))}
-            <div className="px-4 pt-2">
-              <a
-                href="#contact"
-                onClick={closeMenu}
-                className="block w-full text-center rounded-xl bg-violet-600 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-              >
-                Get Started
-              </a>
-            </div>
-          </nav>
-        )}
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.nav
+              id="mobile-menu"
+              aria-label="Mobile navigation"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="md:hidden overflow-hidden border-t border-[var(--border)] bg-[var(--background)]"
+            >
+              <div className="flex flex-col gap-2 py-5">
+                {NAV_LINKS.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMenu}
+                    className="rounded-md px-3 py-2.5 font-display text-base font-medium text-[var(--foreground)] hover:bg-[var(--secondary)] transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+                <div className="pt-3">
+                  <a
+                    href="#contact"
+                    onClick={closeMenu}
+                    className="flex w-full items-center justify-center gap-1.5 rounded-md bg-[var(--accent)] px-5 py-3 font-display text-sm font-semibold text-[var(--accent-foreground)] hover:bg-[var(--accent-hover)] transition-colors"
+                  >
+                    <span>Let&apos;s Talk</span>
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </Container>
     </header>
   );

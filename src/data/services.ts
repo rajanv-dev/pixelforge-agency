@@ -3,30 +3,34 @@ import type { Service } from "@/types";
 export const services: Service[] = [
   {
     id: "ui-ux-design",
-    icon: "Layers",
+    number: "01",
+    icon: "Pencil",
     title: "UI/UX Design",
     description:
-      "We craft intuitive, beautiful interfaces grounded in user research. From wireframes to polished prototypes, every interaction is intentional.",
+      "Designing intuitive, user-centered digital experiences that make every interaction meaningful.",
   },
   {
     id: "web-development",
+    number: "02",
     icon: "Code2",
     title: "Web Development",
     description:
-      "High-performance websites and web apps built with modern frameworks. We prioritize speed, accessibility, and clean, maintainable code.",
+      "Building fast, scalable, responsive websites using modern technologies.",
   },
   {
-    id: "branding",
-    icon: "Palette",
-    title: "Branding",
+    id: "brand-identity",
+    number: "03",
+    icon: "Layers",
+    title: "Brand Identity",
     description:
-      "Strategic brand identities that resonate. Logos, color systems, typography, and brand guidelines that set you apart in a crowded market.",
+      "Creating distinctive brand identities that communicate personality and build recognition.",
   },
   {
-    id: "digital-marketing",
-    icon: "TrendingUp",
-    title: "Digital Marketing",
+    id: "digital-strategy",
+    number: "04",
+    icon: "BarChart3",
+    title: "Digital Strategy",
     description:
-      "Data-driven campaigns that convert. SEO, content strategy, and targeted ads designed to grow your audience and drive measurable results.",
+      "Turning business goals into effective digital strategies that drive measurable growth.",
   },
 ];

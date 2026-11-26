@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* ── PixelForge Design System: Light & Dark Tokens ─────── */
+:root {
+  --background: #F7F6F2;
+  --foreground: #171717;
+  --secondary: #ECEBE5;
+  --card: #FFFFFF;
+  --accent: #C5F467;
+  --accent-hover: #b8ea52;
+  --accent-foreground: #171717;
+  --muted: #666666;
+  --border: #DEDDD6;
+  --nav-bg: rgba(247, 246, 242, 0.92);
+}
+
+html.dark {
+  --background: #111111;
+  --foreground: #F5F5F0;
+  --secondary: #1C1C1C;
+  --card: #222222;
+  --accent: #C5F467;
+  --accent-hover: #d3f785;
+  --accent-foreground: #171717;
+  --muted: #B5B5AD;
+  --border: #383838;
+  --nav-bg: rgba(17, 17, 17, 0.92);
+}
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), system-ui, sans-serif;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .animate-marquee-seamless {
+    animation: marquee-scroll 26s linear infinite;
+    will-change: transform;
+  }
+
+  @media (hover: hover) {
+    .animate-marquee-seamless:hover {
+      animation-play-state: paused;
+    }
+  }
+}

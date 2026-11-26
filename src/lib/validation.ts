@@ -18,8 +18,8 @@ export function validateContactForm(data: ContactFormData): ContactFormErrors {
 
   if (!data.message.trim()) {
     errors.message = "Message is required.";
-  } else if (data.message.trim().length < 20) {
-    errors.message = "Message must be at least 20 characters.";
+  } else if (data.message.trim().length < 10) {
+    errors.message = "Message must be at least 10 characters.";
   }
 
   return errors;
